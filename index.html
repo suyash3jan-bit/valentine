@@ -1,214 +1,451 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2113.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    span.s1 {font: 12.0px 'Apple Color Emoji'}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+  <meta name="theme-color" content="#ff2d7d" />
+  <style>
+    :root{
+      --bg1:#ffecf3;
+      --bg2:#fff7fb;
+      --ink:#1a1a1a;
+      --pink:#ff2d7d;
+      --pink2:#ff5fa2;
+      --card: rgba(255,255,255,.78);
+      --glass: rgba(255,255,255,.55);
+      --shadow: 0 20px 60px rgba(0,0,0,.14);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      overflow:hidden;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, var(--bg1), transparent 60%),
+        radial-gradient(900px 700px at 80% 25%, #ffe3f0, transparent 55%),
+        radial-gradient(1200px 900px at 55% 95%, var(--bg2), #ffffff 60%);
+    }
+
+    /* Floating hearts background */
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      opacity:.65;
+    }
+    .heart{
+      position:absolute;
+      bottom:-80px;
+      width:18px; height:18px;
+      transform: rotate(45deg);
+      background: rgba(255,45,125,.25);
+      filter: blur(.1px);
+      animation: floatUp linear infinite;
+      border-radius: 4px;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:18px; height:18px;
+      border-radius:50%;
+      background: inherit;
+    }
+    .heart:before{ left:-9px; top:0; }
+    .heart:after{ left:0; top:-9px; }
+
+    @keyframes floatUp{
+      from { transform: translateY(0) rotate(45deg); }
+      to   { transform: translateY(-120vh) rotate(45deg); }
+    }
+
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    .card{
+      width:min(760px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.55);
+      box-shadow: var(--shadow);
+      border-radius: 28px;
+      padding: clamp(18px, 4vw, 34px);
+      backdrop-filter: blur(10px);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(0,0,0,.06);
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.02em;
+      margin: 0 auto 14px;
+    }
+    .badgeDot{
+      width:10px; height:10px;
+      border-radius:50%;
+      background: linear-gradient(180deg, var(--pink), var(--pink2));
+      box-shadow: 0 0 0 4px rgba(255,45,125,.18);
+    }
+
+    h1{
+      margin: 10px 0 8px;
+      font-size: clamp(30px, 5vw, 52px);
+      letter-spacing: -0.03em;
+      text-align:center;
+    }
+    .sub{
+      margin: 0 0 18px;
+      text-align:center;
+      opacity:.75;
+      font-size: 14px;
+    }
+
+    .arena{
+      position:relative;
+      height: 320px;
+      border-radius: 22px;
+      background:
+        radial-gradient(700px 300px at 20% 10%, rgba(255,45,125,.18), transparent 55%),
+        radial-gradient(700px 300px at 80% 20%, rgba(255,95,162,.16), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.35));
+      border: 1px solid rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+
+    .hint{
+      position:absolute;
+      left:18px;
+      top:16px;
+      font-size:12px;
+      opacity:.65;
+      background: rgba(255,255,255,.55);
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(0,0,0,.06);
+      user-select:none;
+    }
+
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius: 999px;
+      font-weight: 900;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+      position:absolute;
+    }
+    .btn:active{ transform: scale(.98); }
+
+    #yes{
+      left:50%;
+      top:58%;
+      transform: translate(-50%,-50%);
+      padding: 18px 40px;
+      font-size: 24px;
+      color:#fff;
+      background: linear-gradient(180deg, var(--pink), var(--pink2));
+      box-shadow: 0 18px 40px rgba(255,45,125,.35);
+      min-width: 260px;
+    }
+    #yes:hover{ filter: brightness(1.03); box-shadow: 0 22px 52px rgba(255,45,125,.42); }
+
+    #no{
+      padding: 7px 12px;
+      font-size: 12px;
+      background: rgba(20,20,20,.9);
+      color:#fff;
+      opacity:.92;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+    }
+
+    /* Result overlay */
+    .overlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      place-items:center;
+      text-align:center;
+      padding: 24px;
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(10px);
+    }
+    .overlay.show{ display:grid; }
+
+    .resultCard{
+      width:min(560px, 100%);
+      border-radius: 24px;
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 24px 70px rgba(0,0,0,.14);
+      padding: 22px 22px 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .resultCard:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(500px 220px at 20% 20%, rgba(255,45,125,.18), transparent 55%),
+                  radial-gradient(500px 220px at 80% 30%, rgba(255,95,162,.16), transparent 55%);
+      pointer-events:none;
+    }
+    .resultCard > *{ position:relative; }
+
+    .big{
+      margin: 0 0 10px;
+      font-size: clamp(22px, 3.6vw, 36px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .small{
+      margin: 0;
+      opacity:.75;
+      font-size: 14px;
+    }
+
+    /* Confetti */
+    canvas#confetti{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+    }
+
+    .footer{
+      margin-top: 14px;
+      text-align:center;
+      font-size: 12px;
+      opacity: .6;
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!doctype html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width,initial-scale=1" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Valentine?&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>:root { --pad: 24px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>* { box-sizing: border-box; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100svh;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>place-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: radial-gradient(circle at top, #ffe6f0, #fff);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #111;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: min(720px, calc(100% - 2*var(--pad)));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: clamp(18px, 4vw, 32px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 24px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(255,255,255,.9);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 20px 60px rgba(0,0,0,.12);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>h1 {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 0 0 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: clamp(28px, 5vw, 44px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: -0.02em;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.sub {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 0 0 22px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>opacity: .7;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.play-area {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 280px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(180deg, #fff, #fff6fa);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(0,0,0,.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transition: transform .08s ease;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>user-select: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>-webkit-tap-highlight-color: transparent;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn:active { transform: scale(.98); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* YES = huge CTA */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#yesBtn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>left: 50%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>top: 55%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transform: translate(-50%, -50%);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 18px 34px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 22px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: #ff2d7d;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #fff;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 14px 30px rgba(255,45,125,.35);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-width: 220px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* NO = tiny and slippery */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#noBtn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>left: 70%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>top: 30%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: #111;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #fff;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>opacity: .85;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* Result overlay */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.result {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>inset: 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>place-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 24px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(255,255,255,.92);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(6px);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.result.show { display: grid; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.result h2 {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: clamp(22px, 4vw, 34px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>line-height: 1.15;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.footer {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>opacity: .6;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Will you be my valentine&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="sub"&gt;Choose wisely <span class="s1">😄</span>&lt;/p&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="play-area" id="arena"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="yesBtn"&gt;YES&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn" id="noBtn" aria-label="No"&gt;no&lt;/button&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="result" id="result"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;Congratulations Mahima, for having the best boyfriend in the world&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="footer"&gt;Tip: the “no” button has commitment issues.&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const arena = document.getElementById('arena');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const noBtn = document.getElementById('noBtn');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const yesBtn = document.getElementById('yesBtn');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const result = document.getElementById('result');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Move "no" to a new random position inside the arena</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function dodge() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const a = arena.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const b = noBtn.getBoundingClientRect();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Keep inside bounds with a small margin</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const margin = 10;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const maxX = a.width - b.width - margin;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const maxY = a.height - b.height - margin;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const x = Math.random() * maxX + margin;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const y = Math.random() * maxY + margin;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.left = `${x}px`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.top = `${y}px`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Make "no" dodge when pointer approaches (desktop)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function handlePointerMove(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const a = arena.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const bx = parseFloat(noBtn.style.left || 0) + noBtn.offsetWidth / 2;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const by = parseFloat(noBtn.style.top || 0) + noBtn.offsetHeight / 2;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const px = e.clientX - a.left;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const py = e.clientY - a.top;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const dx = px - bx;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const dy = py - by;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const dist = Math.hypot(dx, dy);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// If user gets close, dodge</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (dist &lt; 90) dodge();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Also dodge on hover / touchstart so it's practically unclickable</p>
-<p class="p1"><span class="Apple-converted-space">    </span>noBtn.addEventListener('mouseenter', dodge);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>noBtn.addEventListener('pointerdown', (e) =&gt; { e.preventDefault(); dodge(); });</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Keep it moving a bit on mobile where "hover" isn't a thing</p>
-<p class="p1"><span class="Apple-converted-space">    </span>arena.addEventListener('pointermove', handlePointerMove, { passive: true });</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// YES click -&gt; show message</p>
-<p class="p1"><span class="Apple-converted-space">    </span>yesBtn.addEventListener('click', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>result.classList.add('show');</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// optional: hide buttons</p>
-<p class="p1"><span class="Apple-converted-space">      </span>yesBtn.style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Initial random position for "no"</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Start it away from YES but still visible</p>
-<p class="p1"><span class="Apple-converted-space">    </span>noBtn.style.left = '70%';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>noBtn.style.top = '30%';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Convert % to px after layout for consistent dodging math</p>
-<p class="p1"><span class="Apple-converted-space">    </span>requestAnimationFrame(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const a = arena.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.left = `${clamp(a.width * 0.72, 10, a.width - noBtn.offsetWidth - 10)}px`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>noBtn.style.top<span class="Apple-converted-space">  </span>= `${clamp(a.height * 0.28, 10, a.height - noBtn.offsetHeight - 10)}px`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <canvas id="confetti"></canvas>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex; justify-content:center;">
+        <div class="badge"><span class="badgeDot"></span> Valentine Protocol v1.0</div>
+      </div>
+
+      <h1>Will you be my valentine?</h1>
+      <p class="sub">There is only one correct answer 😄</p>
+
+      <div class="arena" id="arena">
+        <div class="hint">Try clicking “no”… if you can.</div>
+
+        <button class="btn" id="yes" aria-label="Yes">YES 💖</button>
+        <button class="btn" id="no" aria-label="No">no</button>
+
+        <div class="overlay" id="overlay" aria-live="polite">
+          <div class="resultCard">
+            <h2 class="big">Congratulations Mahima, for having the best boyfriend in the world</h2>
+            <p class="small">Now you’re officially booked for infinite valentines. ♾️💘</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Made with questionable UI ethics.</div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Background floating hearts =====
+    const heartsWrap = document.getElementById('hearts');
+    const heartCount = 22;
+    for (let i=0; i<heartCount; i++){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const left = Math.random()*100;
+      const size = 10 + Math.random()*18;
+      const dur = 7 + Math.random()*10;
+      const delay = Math.random()*-dur;
+      h.style.left = left + 'vw';
+      h.style.width = size + 'px';
+      h.style.height = size + 'px';
+      h.style.animationDuration = dur + 's';
+      h.style.animationDelay = delay + 's';
+      h.style.background = `rgba(255,45,125,${0.14 + Math.random()*0.22})`;
+      heartsWrap.appendChild(h);
+    }
+
+    // ===== Game logic =====
+    const arena = document.getElementById('arena');
+    const noBtn = document.getElementById('no');
+    const yesBtn = document.getElementById('yes');
+    const overlay = document.getElementById('overlay');
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function placeNoButtonRandom(){
+      const a = arena.getBoundingClientRect();
+      const w = noBtn.offsetWidth;
+      const h = noBtn.offsetHeight;
+      const margin = 14;
+
+      // Avoid the center area where YES is
+      // We'll pick random spots and reject ones too close to center
+      const centerX = a.width * 0.5;
+      const centerY = a.height * 0.58;
+
+      for (let tries=0; tries<20; tries++){
+        const x = margin + Math.random() * (a.width - w - 2*margin);
+        const y = margin + Math.random() * (a.height - h - 2*margin);
+        const dx = (x + w/2) - centerX;
+        const dy = (y + h/2) - centerY;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 120){
+          noBtn.style.left = x + 'px';
+          noBtn.style.top  = y + 'px';
+          return;
+        }
+      }
+      // fallback
+      noBtn.style.left = (a.width*0.75) + 'px';
+      noBtn.style.top  = (a.height*0.25) + 'px';
+    }
+
+    // Dodge behavior: near cursor OR on touch
+    function dodge(){
+      placeNoButtonRandom();
+    }
+
+    // Desktop: dodge when pointer approaches
+    function onPointerMove(e){
+      const a = arena.getBoundingClientRect();
+      const nx = parseFloat(noBtn.style.left || 0) + noBtn.offsetWidth/2;
+      const ny = parseFloat(noBtn.style.top  || 0) + noBtn.offsetHeight/2;
+
+      const px = e.clientX - a.left;
+      const py = e.clientY - a.top;
+
+      const dist = Math.hypot(px - nx, py - ny);
+      if (dist < 110) dodge();
+    }
+
+    arena.addEventListener('pointermove', onPointerMove, { passive:true });
+    noBtn.addEventListener('mouseenter', dodge);
+    noBtn.addEventListener('pointerdown', (e)=>{ e.preventDefault(); dodge(); });
+
+    // YES: show overlay + confetti
+    yesBtn.addEventListener('click', ()=>{
+      overlay.classList.add('show');
+      yesBtn.style.display = 'none';
+      noBtn.style.display = 'none';
+      burstConfetti();
+    });
+
+    // Initial position after layout
+    requestAnimationFrame(()=> placeNoButtonRandom());
+    window.addEventListener('resize', ()=> placeNoButtonRandom());
+
+    // ===== Confetti (tiny, no libraries) =====
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas(){
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let confetti = [];
+    function burstConfetti(){
+      confetti = [];
+      const count = 180;
+      const originX = window.innerWidth * 0.5;
+      const originY = window.innerHeight * 0.35;
+
+      const palette = ['#ff2d7d','#ff5fa2','#ffd1e3','#ffffff','#111111'];
+
+      for (let i=0; i<count; i++){
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 6;
+        confetti.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 4,
+          g: 0.12 + Math.random()*0.18,
+          size: 4 + Math.random()*6,
+          rot: Math.random()*Math.PI,
+          vr: (Math.random()-0.5)*0.25,
+          life: 180 + Math.random()*80,
+          c: palette[(Math.random()*palette.length)|0],
+          shape: Math.random() < 0.25 ? 'heart' : 'rect'
+        });
+      }
+      requestAnimationFrame(tickConfetti);
+    }
+
+    function drawMiniHeart(x,y,s,color,rot){
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.rotate(rot);
+      ctx.scale(s/18, s/18);
+      ctx.beginPath();
+      // Simple heart path
+      ctx.moveTo(0,6);
+      ctx.bezierCurveTo(0,0,-9,0,-9,6);
+      ctx.bezierCurveTo(-9,12,0,15,0,18);
+      ctx.bezierCurveTo(0,15,9,12,9,6);
+      ctx.bezierCurveTo(9,0,0,0,0,6);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function tickConfetti(){
+      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+
+      confetti = confetti.filter(p => p.life > 0);
+      for (const p of confetti){
+        p.life -= 1;
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.life/220));
+
+        if (p.shape === 'heart'){
+          drawMiniHeart(p.x, p.y, p.size*2.2, p.c, p.rot);
+        } else {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.c;
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+          ctx.restore();
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      if (confetti.length > 0){
+        requestAnimationFrame(tickConfetti);
+      }
+    }
+  </script>
 </body>
 </html>
